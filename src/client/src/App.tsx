@@ -1,55 +1,55 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
+import { readStored, writeStored } from './storage'
 import './App.css'
 
-type WeatherForecast = {
-  date: string
-  temperatureC: number
-  temperatureF: number
-  summary: string | null
-}
+const ExamMap = lazy(() => import('./views/ExamMap'))
+const HierarchyBuilder = lazy(() => import('./views/HierarchyBuilder'))
+const ResponsibilitySort = lazy(() => import('./views/ResponsibilitySort'))
+
+const views = [
+  { id: 'map', name: 'Exam map', component: ExamMap },
+  { id: 'hierarchy', name: 'Resource hierarchy', component: HierarchyBuilder },
+  { id: 'responsibility', name: 'Who is responsible', component: ResponsibilitySort },
+] as const
+
+type ViewId = (typeof views)[number]['id']
 
 function App() {
-  const [forecasts, setForecasts] = useState<WeatherForecast[]>([])
-  const [error, setError] = useState<string | null>(null)
+  const [viewId, setViewId] = useState<ViewId>(() => {
+    const saved = readStored<string>('az900.view', 'map')
+    return views.some((v) => v.id === saved) ? (saved as ViewId) : 'map'
+  })
+  const View = views.find((v) => v.id === viewId)!.component
 
-  useEffect(() => {
-    fetch('/api/weatherforecast')
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json() as Promise<WeatherForecast[]>
-      })
-      .then(setForecasts)
-      .catch((err: Error) => setError(err.message))
-  }, [])
+  function open(id: ViewId) {
+    setViewId(id)
+    writeStored('az900.view', id)
+  }
 
   return (
-    <main>
-      <h1>Weather forecast</h1>
-      {error && <p>Could not reach the API: {error}</p>}
-      {!error && forecasts.length === 0 && <p>Loading…</p>}
-      {forecasts.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Temp (°C)</th>
-              <th>Temp (°F)</th>
-              <th>Summary</th>
-            </tr>
-          </thead>
-          <tbody>
-            {forecasts.map((f) => (
-              <tr key={f.date}>
-                <td>{f.date}</td>
-                <td>{f.temperatureC}</td>
-                <td>{f.temperatureF}</td>
-                <td>{f.summary}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </main>
+    <div className="app">
+      <header className="topbar">
+        <h1>AZ-900 study map</h1>
+        <nav aria-label="Study tools">
+          {views.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              className="nav-tab"
+              aria-current={v.id === viewId ? 'page' : undefined}
+              onClick={() => open(v.id)}
+            >
+              {v.name}
+            </button>
+          ))}
+        </nav>
+      </header>
+      <main className="view">
+        <Suspense fallback={<p className="view-loading">Loading…</p>}>
+          <View />
+        </Suspense>
+      </main>
+    </div>
   )
 }
 

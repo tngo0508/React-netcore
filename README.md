@@ -1,6 +1,26 @@
 # React + .NET
 
 A React (Vite + TypeScript) frontend with an ASP.NET Core Web API backend.
+The frontend is an interactive study aid for the AZ-900 (Azure Fundamentals)
+exam.
+
+## Study tools
+
+- **Exam map** ([Cytoscape.js](https://js.cytoscape.org/)): the three exam
+  areas drawn as transit lines, with every topic as a station. Select a station
+  for a summary and an exam tip, follow dashed transfers to related topics on
+  other lines, and mark stations you know to track progress per line. In
+  **Find the station** mode, you get a description and tap the station it
+  matches.
+- **Resource hierarchy** ([React Flow](https://reactflow.dev/)): connect
+  management groups, subscriptions, resource groups, and resources into the
+  correct tree. Once it's right, assign a policy at any scope and watch it
+  pass down to everything beneath.
+- **Who is responsible** (React Flow): drag the ten duties from the shared
+  responsibility model into You, Shared, or Microsoft for on-premises, IaaS,
+  PaaS, or SaaS, then check your answer.
+
+Progress on the exam map is saved in your browser's local storage.
 
 ```
 src/
@@ -93,10 +113,10 @@ Open `http://localhost:5173`. Press `Ctrl+C` in each terminal to stop.
 
 ### 5. Check that it works
 
-The home page shows a weather forecast table loaded from the API. If it shows
-"Could not reach the API", the API isn't running or is on a different port.
+The home page opens on the exam map. The study tools run entirely in the
+browser and don't call the API yet.
 
-You can also call the API directly:
+To check the API, call it directly:
 
 | URL (Option B ports) | What it is |
 | --- | --- |
