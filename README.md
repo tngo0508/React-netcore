@@ -38,7 +38,7 @@ src/
 | Tool | Version | Check with |
 | --- | --- | --- |
 | [.NET SDK](https://dotnet.microsoft.com/download) | 10.0 | `dotnet --version` |
-| [Node.js](https://nodejs.org/) (includes npm) | 20 or later | `node --version` |
+| [Node.js](https://nodejs.org/) (includes npm) | 20.19+ or 22.12+ (Vite 8 requirement) | `node --version` |
 
 ### 2. Clone the repo
 
@@ -135,6 +135,14 @@ so no CORS setup is needed. Under Aspire, the API's address is passed in
 automatically; without Aspire, the proxy uses `http://localhost:5131`.
 
 ### Troubleshooting
+
+- **The `client` resource stops right away with
+  `does not provide an export named 'styleText'`.** Aspire started Vite with a
+  Node.js older than 20.19. This happens when your terminal uses a newer Node
+  from a version manager (such as nvm) but Aspire, or the IDE that launched it,
+  finds an older Node on its `PATH`. Check the Node version in the client's
+  logs in the Aspire dashboard, then update that Node install or make the newer
+  one first on the `PATH` the IDE uses.
 
 - **The dashboard shows a certificate warning or won't load.** Run
   `dotnet dev-certs https --trust` again and restart the AppHost.
