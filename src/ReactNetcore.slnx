@@ -2,4 +2,6 @@
   <Folder Name="/api/">
     <Project Path="api/Api.csproj" />
   </Folder>
+  <Project Path="AppHost/AppHost.csproj" />
+  <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
 </Solution>

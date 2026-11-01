@@ -4,6 +4,8 @@ A React (Vite + TypeScript) frontend with an ASP.NET Core Web API backend.
 
 ```
 src/
+├── AppHost/             Aspire AppHost: runs the API and client together
+├── ServiceDefaults/     Shared Aspire defaults (OpenTelemetry, health checks, resilience)
 ├── client/              React 19 + TypeScript (Vite)
 ├── api/                 .NET 10 Web API (controllers, OpenAPI)
 └── ReactNetcore.slnx    Solution file
@@ -13,8 +15,22 @@ src/
 
 - Node.js 20+
 - .NET 10 SDK
+- A trusted HTTPS dev certificate (`dotnet dev-certs https --trust`)
 
-## Running locally
+## Running locally with Aspire (recommended)
+
+From `src/`:
+
+```sh
+dotnet run --project AppHost
+```
+
+This starts the API and the Vite dev server (installing npm packages if
+needed) and opens the Aspire dashboard, where you can find each app's URL,
+logs, traces, and metrics. The client waits for the API's `/health` check
+before starting, and its `/api` proxy is pointed at the API automatically.
+
+## Running without Aspire
 
 Start the API and the client in two terminals from `src/`:
 
